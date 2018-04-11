@@ -10,22 +10,31 @@ export default class HomeScreen extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { projects: [] };
+        this.state = {
+            projects: [],
+        };
     }
 
-    componentDidMount() {
-        this.setState({
-            projects: [
-                { name: 'Test Project 1', description: 'Cool Project!' },
-                { name: 'Test Project 2', description: 'Cool Project!' },
-                { name: 'Test Project 3', description: 'Cool Project!' },
-                { name: 'Test Project 4', description: 'Cool Project!' },
-            ]
-        })
+    async componentDidMount() {
+
+        let projects = await this.fetchProjects();
+        this.setState({ projects });
+    }
+
+    async fetchProjects() {
+
+        try {
+            let result = await fetch({ url: 'https://gravity.covalence.io/api/graduation/projects' });
+            let projects = await result.json();
+            return projects;
+        } catch (e) {
+            console.log(e);
+            return;
+        }
     }
 
     navigate(project) {
-        this.props.navigation.navigate('ProjectDetail', { project });
+        this.props.navigation.navigate('ProjectTab', { project });
     }
 
     render() {
